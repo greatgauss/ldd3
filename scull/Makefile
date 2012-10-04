@@ -10,17 +10,22 @@ else
 endif
 
 EXTRA_CFLAGS += $(DEBFLAGS)
+ifneq ($(LDDINC),)
 EXTRA_CFLAGS += -I$(LDDINC)
+endif
+$(warning "EXTRA_CFLAGS= $(EXTRA_CFLAGS)###")
 
 ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
+$(warning "call from kernel build system")
 scull-objs := main.o pipe.o access.o
 
 obj-m	:= scull.o
 
 else
 
+$(warning "call NOT from kernel build system")
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD       := $(shell pwd)
 
