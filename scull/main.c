@@ -524,6 +524,7 @@ loff_t scull_llseek(struct file *filp, loff_t off, int whence)
 	struct scull_dev *dev = filp->private_data;
 	loff_t newpos;
 
+	printk(KERN_NOTICE "llseek %d+%d\n", whence, off);
 	switch(whence) {
 	  case 0: /* SEEK_SET */
 		newpos = off;
@@ -631,6 +632,9 @@ int scull_init_module(void)
 	if (result < 0) {
 		printk(KERN_WARNING "scull: can't get major %d\n", scull_major);
 		return result;
+	}
+	else {
+		PDEBUG("get major %d\n", scull_major);
 	}
 
         /* 
