@@ -18,7 +18,6 @@ static DECLARE_WORK(work_exam_A, do_work);
 
 static struct workqueue_struct *my_workqueue;
 
-atomic_t wq_run_times;
 struct timer_list my_timer;
 
 
@@ -33,20 +32,15 @@ void test_timer_fn(unsigned long arg)
 }
 void do_work(struct work_struct *arg)
 {
-    atomic_inc(&wq_run_times);
-    printk("====GKJ work queue run times: %u====\n", atomic_read(&wq_run_times));
+    printk("====work queue run====\n");
+    dump_stack();
 }
 
 int wq_init(void)
 {
-    unsigned long j = jiffies;
-
-    atomic_set(&wq_run_times, 0);
-
-
     init_timer(&my_timer);
     my_timer.function = test_timer_fn;
-    my_timer.expires = j + 3 * HZ;
+    my_timer.expires = jiffies + 3 * HZ;
     add_timer(&my_timer);
 
     my_workqueue = create_singlethread_workqueue("test-wq");
