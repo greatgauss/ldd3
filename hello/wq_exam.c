@@ -11,28 +11,27 @@
 MODULE_LICENSE("Dual BSD/GPL");
 
 
-static void do_work(struct work_struct *);
 //static void linkwatch_event(struct work_struct *dummy);
 
-static DECLARE_WORK(work_exam_A, do_work);
+static void work_cb(struct work_struct *);
+
+static DECLARE_WORK(mywork, work_cb);
+
 
 static struct workqueue_struct *my_workqueue;
 
 struct timer_list my_timer;
-
 
 void test_timer_fn(unsigned long arg)
 {
     my_timer.expires += 3 * HZ;
 
     add_timer(&my_timer);
-    if (queue_work(my_workqueue, &work_exam_A) == 0) {
-        printk("Timer: add work queue failed\n");
-    }
+    queue_work(my_workqueue, &mywork);
 }
-void do_work(struct work_struct *arg)
+void work_cb(struct work_struct *arg)
 {
-    printk("====work queue run====\n");
+    printk("====EAT EAT====\n");
     dump_stack();
 }
 
@@ -43,8 +42,10 @@ int wq_init(void)
     my_timer.expires = jiffies + 3 * HZ;
     add_timer(&my_timer);
 
-    my_workqueue = create_singlethread_workqueue("test-wq");
-
+    my_workqueue = 
+        //create_singlethread_workqueue("test-wq");
+        //alloc_workqueue("test-wq", WQ_UNBOUND | WQ_MEM_RECLAIM, 1);
+        __alloc_workqueue_key("test-wq", WQ_UNBOUND | WQ_MEM_RECLAIM, 1, NULL, NULL);
     printk("test-wq init success\n");
 
     return 0;
@@ -58,4 +59,6 @@ void wq_exit(void)
 }
 module_init(wq_init);
 module_exit(wq_exit);
+
+
 
