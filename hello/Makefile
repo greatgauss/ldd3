@@ -1,1 +1,1 @@
-obj-$(CONFIG_AM_HELLO) += wq_exam.o
+obj-$(CONFIG_AM_HELLO) += netfilter_exam.o
